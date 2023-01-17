@@ -8,9 +8,8 @@ import { getProductsFromCategoryAndQuery, getCategories } from './apiFunctions';
 export default class Home extends Component {
   state = {
     produtoPorPesquisa: '',
-    resultsProdutoPorPesquisa: [],
+    resultsProdutos: [],
     categories: [],
-    produtosPorCategoria: [],
     erro: false,
   }
 
@@ -31,16 +30,13 @@ export default class Home extends Component {
     const { id } = event.target;
     const { produtoPorPesquisa } = this.state;
     const produtos = await getProductsFromCategoryAndQuery(id, produtoPorPesquisa);
-    const resultsProdutoPorPesquisa = produtos.results;
-    const produtosPorCategoria = produtos.results;
-    console.log(resultsProdutoPorPesquisa);
-    console.log(produtosPorCategoria);
+    const resultsProdutos = produtos.results;  
     this.setState({
-      resultsProdutoPorPesquisa,  
-      produtosPorCategoria,  
+      resultsProdutos,  
       erro: false,
+      produtoPorPesquisa: '',
     }, () => {
-      if (resultsProdutoPorPesquisa.length === 0){
+      if (resultsProdutos.length === 0){
         this.setState({erro: true})
       }      
     })  
@@ -76,13 +72,11 @@ export default class Home extends Component {
   };
 
   render() {
-    // const {resultsProdutoPorPesquisa} = this.state
-    // console.log(resultsProdutoPorPesquisa);
     return (
       <>
       <Search {...this.props} {...this.state} handleClick={this.handleClick} handleChange={this.handleChange}/>
       <Categorias {...this.props} {...this.state} handleClick={this.handleClick}/>
-      <ProductsList {...this.props} {...this.state}/>
+      <ProductsList {...this.props} {...this.state} saveProduct={this.saveProduct}/>
       </>
     )
   }
